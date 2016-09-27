@@ -20,6 +20,8 @@ from lxml import etree
 import tornado.web
 from tornado_json.api_doc_gen import api_doc_gen
 from tornado_json.constants import TORNADO_MAJOR
+from tornado_json.routes import get_module_routes, gen_submodule_names
+from application.settings.common import REST_MODULES
 
 
 class Application(tornado.web.Application):
@@ -691,3 +693,23 @@ class WebService(tornado.web.Application):
             tornado.web.Application.__init__(self, self._services, **settings)
 
         self.db = db
+
+
+def get_routes(package):
+    """
+    This will walk ``package`` and generates routes from any and all
+    ``APIHandler`` and ``ViewHandler`` subclasses it finds. If you need to
+    customize or remove any routes, you can do so to the list of
+    returned routes that this generates.
+
+    :type  package: package
+    :param package: The package containing RequestHandlers to generate
+        routes from
+    :returns: List of routes for all submodules of ``package``
+    :rtype: [(url, RequestHandler), ... ]
+    """
+    exclusions = [module.replace('api.rest', 'celeryapp') for module in REST_MODULES]
+    modules = [module for module in list(gen_submodule_names(package)) if module not in exclusions]
+
+    return list(chain(*[get_module_routes(modname, custom_routes=None, exclusions=exclusions) for modname in
+                        modules]))

@@ -2,7 +2,7 @@
 
 from application import settings
 from application.src import databases
-from modules.users.v1.settings import MODULE_NAME
+from modules.widgetsspa.v1.settings import MODULE_NAME
 
 
 def get_db_connections():

@@ -29,40 +29,35 @@ APPLICATION_ENCODING = 'utf-8'
 # Active REST APIs
 REST_MODULES = [
     'application',
-    'modules.users.v1.api.rest',
+    'modules.widgetsspa.v1.api.rest',
 ]
 
 # Active Mock REST APIs
 REST_MOCK_MODULES = [
-    'modules.users.v1.api.rest.mock',
+    'modules.widgetsspa.v1.api.rest.mock',
 ]
 
 # Active SOAP APIs
 SOAP_MODULES = [
-    'modules.users.v1.api.soap',
+
 ]
 
 # Celery application name
-CELERY_APP_NAME = 'ui'
+CELERY_APP_NAME = 'widgetsspa'
 
 # Celery Tasks (Async)
 CELERY_TASKS = [
-    'modules.users.v1.services.sample',
+    'modules.widgetsspa.v1.services.sample',
 ]
 
 # Celery Routes (Task vs Queue)
 CELERY_ROUTES = {
     'application.request': {'queue': 'request'},
-    'users.v1.sample.write_file': {'queue': 'sample'},
-    'widgets.v1.sample.write_file': {'queue': 'sample'},
 }
 
 # Celery Schedule (Jobs)
 CELERYBEAT_SCHEDULE = {
-    # 'update-workflow-cache': {
-    #     'task': 'workflow.v1.cache.update',
-    #     'schedule': timedelta(seconds=30)
-    # },
+
 }
 
 # Celery Default Configs
@@ -120,13 +115,5 @@ LOGGING = {
             'filename': "{0}/logs/application.log".format(BASE_DIR),
             'when': "D",
         },
-    },
-}
-
-LOG_HASHES = {
-    # Module
-    'users': {
-        # Operation
-        'sample': 'f0e1e9d317684f1caa727f463287b7d6',
     },
 }

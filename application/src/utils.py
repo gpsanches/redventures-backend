@@ -79,13 +79,10 @@ def list2dict(list, key):
 def get_config_map(configs):
     """
     Turns a list into a dict.
-    :param list:
+    :param configs:
     :return: dict
     """
-    config_map = {}
-    for config in configs:
-        config_map.update(config.config)
-    return config_map
+    return {item.key: row2dict(item) for item in configs}
 
 
 def get_headers(headers, filter=None):

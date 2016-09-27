@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 from application.src.rewrites import APIHandler
-from application.src.models import Config
+# from application.src.models import Config
 from application.src.auth import internal
 from application.src import utils
 

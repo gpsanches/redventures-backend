@@ -1,37 +1,55 @@
 # -*- encoding: utf-8 -*-
 
 """
-Settings for prod environment.
+Settings for dev environment.
 """
 
-DEBUG = False
+DEBUG = True
 
 # Database
 DATABASES = {
-    'mysql': {
-        'ENGINE': 'mysql',
-        'NAME': 'redverntures',
-        'USER': 'root',
-        'PASSWORD': '123456',
-        'HOST': 'localhost',
-        'PORT': 3306,
-        'CHARSET': 'utf8',
+    # Application
+    "application": {
+        'mysql-configs': {
+            'pool_recycle': 3600,
+            'pool_size': 5,
+            'max_overflow': 10,
+            'timeout': 30
+        },
+        'rabbit': {
+            'USER': 'guest',
+            'PASSWORD': 'guest',
+            'HOST': 'localhost',
+            'PORT': 5672,
+        },
     },
-    'rabbit': {
-        'USER': 'guest',
-        'PASSWORD': 'guest',
-        'HOST': 'localhost',
-        'PORT': 5672,
-    }
+    # widgetsspa
+    "widgetsspa": {
+        'mysql': {
+            'ENGINE': 'mysql',
+            'NAME': 'redventures',
+            'USER': 'root',
+            'PASSWORD': '123456',
+            'HOST': 'localhost',
+            'PORT': 3306,
+            'CHARSET': 'utf8',
+        },
+        'rabbit': {
+            'USER': 'guest',
+            'PASSWORD': 'guest',
+            'HOST': 'localhost',
+            'PORT': 5672,
+        },
+    },
 }
 
 # Tornado
-TORNADO_SOCKETS = 15
+TORNADO_SOCKETS = 1
 
 # Celery Broker
 CELERY_BROKER = 'amqp://{0}:{1}@{2}:{3}'.format(
-    DATABASES["rabbit"]["USER"],
-    DATABASES["rabbit"]["PASSWORD"],
-    DATABASES["rabbit"]["HOST"],
-    DATABASES["rabbit"]["PORT"]
+    DATABASES["application"]["rabbit"]["USER"],
+    DATABASES["application"]["rabbit"]["PASSWORD"],
+    DATABASES["application"]["rabbit"]["HOST"],
+    DATABASES["application"]["rabbit"]["PORT"]
 )

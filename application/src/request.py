@@ -4,10 +4,10 @@ from functools import wraps
 from datetime import datetime
 from application.src.celeryapp import CeleryApp, BaseTask
 from application.src import utils
-from application.src.models import Request
+# from application.src.models import Request
 
 # Celery App
-celery = CeleryApp.get_instance()
+# celery = CeleryApp.get_instance()
 
 
 def request(func):
@@ -30,7 +30,7 @@ def request(func):
     return with_requests
 
 
-@celery.task(base=BaseTask, name="application.request")
+# @celery.task(base=BaseTask, name="application.request")
 def request_async(url, header, body, date, db):
     """
     Saves request asynchronously.

@@ -13,12 +13,3 @@ Base = declarative_base()
 class DefaultBase(Base):
     __abstract__ = True
     metadata = MetaData()
-
-
-class Config(DefaultBase):
-    __tablename__ = 'configs'
-    id = Column(Integer, primary_key=True)
-    config = Column(MutableDict.as_mutable(HSTORE), nullable=True)
-    key = Column(String(255), nullable=False)
-    value = Column(String(255), nullable=False)
-

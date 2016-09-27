@@ -8,7 +8,7 @@ from application.src.rewrites import APIHandler
 log = logging.getLogger(__name__)
 
 # Settings
-partner_name = 'users'
+partner_name = 'widgetsspa'
 api_version = 'v1/mock'
 
 
