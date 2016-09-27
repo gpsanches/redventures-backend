@@ -1,13 +1,13 @@
-from fabric.api import cd, task, local, env, run
-from fabric.context_managers import prefix
+from fabric.api import cd, task, local, run, prefix, lcd, path
+# from fabvenv import virtualenv
 import os
 
 
-# ROOT_DIR = "/opt/redventures-widgets-spa/"
-# VENV = "/opt/redventures-widgets-spa/bin/activate"
+# PROJECT_DIR = "/opt/redventures/redventures-backend"
+# VENV = "/opt/redventures/venv/bin/activate"
 
-ROOT_DIR = "/Users/gsanches/Projects/python/redventures"
-VENV = "/Users/gsanches/Projects/python/env/redventures/bin/activate"
+PROJECT_DIR = "/Users/gsanches/Projects/python/redventures"
+VENV = "/Users/gsanches/Projects/python/env/redventures/bin/"
 
 LOG_DIR = "/var/log/redventures-test"
 LOG_PATH = "{0}/application.log".format(LOG_DIR)
@@ -45,8 +45,11 @@ def create_log_dir():
 
 @task
 def start_app():
-    run("sudo killall -9 python")
-    run("sudo python api_rest.py --module=widgetsspa --port=8888")
+    local('git pull origin master')
+    local('pip freeze')
+    local('pip install -r requirements.txt')
+    local('which python')
+    local("python api_rest.py --module=widgetsspa --port=8888")
 
 
 @task
@@ -55,13 +58,7 @@ def deploy():
     Deploys application.
     :return:
     """
-    with cd(ROOT_DIR):
+    with lcd(PROJECT_DIR):
         remove_cache()
         create_log_dir()
-
-        # Pull changes to server
-        run('git pull origin master')
-
-        # Activate virtualenv
-        with prefix('source /Users/gsanches/Projects/python/env/redventures/bin/activate'):
-            start_app()
+        start_app()
