@@ -3,11 +3,11 @@ from fabric.api import cd, task, local, run, prefix, lcd, path
 import os
 
 
-# PROJECT_DIR = "/opt/redventures/redventures-backend"
-# VENV = "/opt/redventures/venv/bin/activate"
+PROJECT_DIR = "/opt/redventures/redventures-backend"
+VENV = "/opt/redventures/venv/bin/activate"
 
-PROJECT_DIR = "/Users/gsanches/Projects/python/redventures"
-VENV = "/Users/gsanches/Projects/python/env/redventures/bin/"
+# PROJECT_DIR = "/Users/gsanches/Projects/python/redventures"
+# VENV = "/Users/gsanches/Projects/python/env/redventures/bin/"
 
 LOG_DIR = "/var/log/redventures-test"
 LOG_PATH = "{0}/application.log".format(LOG_DIR)
