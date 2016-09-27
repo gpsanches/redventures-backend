@@ -20,7 +20,7 @@ class UserHandler(APIHandler):
         r"/users(?:/)?",
 
         # get or post with id
-        r"/users/([0-9]+)(?:/)?",
+        r"/users/id/([0-9]+)(?:/)?",
     ]
 
     # Service
@@ -50,3 +50,38 @@ class UserHandler(APIHandler):
 
             # Return error
             return self.error({"success": 0, "message": "GET request Error!"}, 500)
+
+    @validate.post
+    def post(self):
+        """
+        Method POST to API restful user
+
+        :returns: json -- to sync requests (200) | empty string ("").
+
+        :raises: Exception (500)
+        """
+        try:
+
+            # Getting body
+            data = json_decode(self.request.body)
+
+            response = self.service.post(self.request.uri, data)
+
+            log.info("User POST request successfully. "
+                     "Request URL: {0}. "
+                     "Request body: {1}. "
+                     .format(self.request.uri, data))
+
+            return self.success(response, 200)
+
+        except Exception as e:
+            log.error("User POST request error."
+                      "Request URL: {0}. "
+                      "Request body: {1}. "
+                      "Exception: {2}. "
+                      .format(self.request.uri, self.request.body, e))
+
+            return self.error({
+                "message": "User POST request error."
+                           "Request URL: {0}. "
+                           "Request body: {1}. ".format(self.request.uri, self.request.body)}, 500)

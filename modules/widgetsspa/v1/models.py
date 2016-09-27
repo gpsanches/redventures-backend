@@ -41,6 +41,9 @@ class DefaultBase(Base):
 
 
 class Config(DefaultBase):
+    """
+    Table config definition
+    """
     __tablename__ = 'configs'
 
     id = Column(TINYINT(unsigned=True), primary_key=True)
@@ -55,13 +58,13 @@ class Users(DefaultBase):
     __tablename__ = 'users'
 
     id = Column(TINYINT(unsigned=True), primary_key=True)
-    name = Column(String(255), nullable=False)
+    name = Column(String(255), nullable=False, unique=True)
     gravatar = Column(String(255), nullable=True)
 
 
 class Widgets(DefaultBase):
     """
-    Table Users definition
+    Table Widgets definition
     """
     __tablename__ = 'widgets'
 

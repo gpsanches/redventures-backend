@@ -5,6 +5,7 @@ import validictory
 import datetime
 from application.src import exceptions
 
+
 class Validators(object):
     """
     Class which holds validation rules.
@@ -50,7 +51,7 @@ class Validators(object):
         :param format_option:
         :return:
         """
-        if not validators.uuid(value):
+        if not isinstance(value, int):
             if not isinstance(value, str):
                 raise validictory.FieldValidationError("invalid filter", fieldname, value)
 
@@ -67,6 +68,19 @@ class Validators(object):
         if not validators.email(value):
             raise validictory.FieldValidationError("invalid Email", fieldname, value)
 
+    @staticmethod
+    def validate_url(validator, fieldname, value, format_option):
+        """
+        Validates URL.
+        :param validator:
+        :param fieldname:
+        :param value:
+        :param format_option:
+        :return:
+        """
+        if not validators.url(value):
+            raise validictory.FieldValidationError("invalid Url", fieldname, value)
+
     @classmethod
     def validate_schema(cls, data, schema):
         """
@@ -80,6 +94,7 @@ class Validators(object):
                 "uuid": cls.validate_uuid,
                 "datetime": cls.validate_datetime,
                 "email": cls.validate_email,
+                "url": cls.validate_url,
                 "filter": cls.validate_filter,
             }
 

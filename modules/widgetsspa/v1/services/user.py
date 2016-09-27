@@ -9,6 +9,7 @@ import application.settings as settings
 from modules.widgetsspa.v1.settings import MODULE_NAME
 from modules.widgetsspa.v1 import settings as users_settings
 from modules.widgetsspa.v1.models import Users
+from sqlalchemy.exc import IntegrityError
 
 
 # Logging handler
@@ -25,6 +26,28 @@ class UserService(object):
     """
     Class is responsible to user service
     """
+
+    @staticmethod
+    def add(session, user):
+        """
+        Save the user
+
+        :param session:
+        :param user:
+        :return: json, object
+        """
+
+        user_object = Users(
+            name=user["name"],
+            gravatar=user["gravatar"]
+        )
+
+        session.add(user_object)
+        session.flush()
+        session.refresh(user_object)
+        user.update({"id": user_object.id})
+
+        return user, user_object
 
     @staticmethod
     def get_filters(filters, value):
@@ -64,21 +87,20 @@ class UserService(object):
         :param deleted_at:
         :return:json, object
         """
-        users = UserService.get.db(users_settings.MODULE_NAME).query(Users).filter_by(deleted_at=deleted_at).all()
+        users = UserService.get.db(users_settings.MODULE_NAME).query(Users).all()
         json = list2dict(users, 'id') if users else None
 
         return json, users
 
     @staticmethod
-    def get_by_id(id, deleted_at=None):
+    def get_by_id(id):
         """
         Return filter by id
         :param id:
-        :param deleted_at:
         :return: json, object
         """
         users = UserService.get.db(users_settings.MODULE_NAME) \
-            .query(Users).filter_by(id=id, deleted_at=deleted_at).first()
+            .query(Users).filter_by(id=id).first()
         json = row2dict(users) if users else None
 
         return json, users
@@ -120,58 +142,55 @@ class UserService(object):
 
     @staticmethod
     @celery.task(base=BaseTask, name="widgetsspa.v1.post")
-    def post(self, transaction_uuid):
+    def post(url, data):
         """
-        Method POST to API restful bundle
+        Sync or async save bundle database data
 
-        :type transaction_uuid: string
-        :param transaction_uuid: transaction uuid.
-
-        :returns: json -- to sync requests (200) | empty string ("") -- to async requests (202).
-
-        :raises: Exception (500)
+        :param url: string
+        :param data: json
+        :param is_sync: boolean
+        :param configs: dict
+        :return: json | null
+        :raises: IntegrityError, Exception
         """
+        task = UserService.post
         try:
-            is_sync = self.request.headers['is_sync']
+            json, object = UserService.add(task.db(users_settings.MODULE_NAME), data)
 
-            # Getting body + url data
-            data = json_decode(self.request.body)
-            data.update({"transaction_uuid": transaction_uuid})
+            response = {
+                "success": 1,
+                "data": json
+            }
 
-            # Getting configs
-            configs = self.service.get_configs(self.application.settings)
+            # log
+            task.log.info(response)
 
-            if is_sync:
-                # SYNC call
-                response = self.service.post(self.request.uri, data, is_sync, configs)
+            return response
 
-                log.info("Bundle POST request successfully. "
-                         "Request URL: {0}. "
-                         "Request body: {1}. "
-                         .format(self.request.uri, data))
+        except IntegrityError as ie:
+            task.log.error("This User already exists! "
+                           "Body: {0} "
+                           "Error: {1}. "
+                           .format(url, data, ie))
 
-                return self.success(response, 200)
+            response = {
+                "success": 0,
+                "data": data,
+                "message": "This user already exists! "
+            }
 
-            # Sending POST request to queued (async call)
-            self.service.post.delay(self.request.uri, data, is_sync, configs)
-
-            log.info("Bundle POST request successfully queued. "
-                     "Request URL: {0}. "
-                     "Request body: {1}. "
-                     .format(self.request.uri, data))
-
-            return self.success("", 202)
+            return response
 
         except Exception as e:
-            log.error("Bundle POST request error."
-                      "Request URL: {0}. "
-                      "Request body: {1}. "
-                      "Exception: {2}. "
-                      "Operation Hash: {3}."
-                      .format(self.request.uri, self.request.body, e, LOG_HASH_POST))
+            task.log.error("Could not create user. "
+                           "Body: {0} "
+                           "Error: {1}. "
+                           .format(data, e))
 
-            return self.error({
-                "message": "Bundle POST request error."
-                "Request URL: {0}. "
-                "Request body: {1}. " . format(self.request.uri, self.request.body)
-            }, 500)
+            response = {
+                "success": 0,
+                "message": "Could not create user.",
+                "data": data
+            }
+
+            return response

@@ -22,7 +22,7 @@ def get(func):
 
         schema = {
             "type": "object", "properties": {
-                "filter": {"required": False, "type": "integer"},
+                "filter": {"required": False, "format": "filter"},
             }
         }
 
@@ -58,7 +58,7 @@ def post(func):
         schema = {
             "type": "object", "properties": {
                 "name": {"required": True, "type": "string"},
-                "gravatar": {"required": False, "type": "string"},
+                "gravatar": {"required": False, "format": "url"},
             }
         }
 
