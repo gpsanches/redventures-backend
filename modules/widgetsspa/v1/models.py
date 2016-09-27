@@ -69,7 +69,7 @@ class Widgets(DefaultBase):
     __tablename__ = 'widgets'
 
     id = Column(TINYINT(unsigned=True), primary_key=True)
-    name = Column(String(255), nullable=False)
+    name = Column(String(255), nullable=False, unique=True)
     color = Column(String(255), nullable=False)
     price = Column(Float(precision=2), nullable=False)
     inventory = Column(TINYINT(unsigned=True), nullable=False)

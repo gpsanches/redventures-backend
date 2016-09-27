@@ -80,11 +80,10 @@ class UserService(object):
             return None
 
     @staticmethod
-    def get_all(deleted_at=None):
+    def get_all():
         """
         Return all data
 
-        :param deleted_at:
         :return:json, object
         """
         users = UserService.get.db(users_settings.MODULE_NAME).query(Users).all()
@@ -144,12 +143,10 @@ class UserService(object):
     @celery.task(base=BaseTask, name="widgetsspa.v1.post")
     def post(url, data):
         """
-        Sync or async save bundle database data
+        Save users database data
 
         :param url: string
         :param data: json
-        :param is_sync: boolean
-        :param configs: dict
         :return: json | null
         :raises: IntegrityError, Exception
         """

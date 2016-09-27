@@ -33,7 +33,7 @@ class UserHandler(APIHandler):
         :return:
         """
         try:
-            # Getting body
+            # Getting url
             data = {"filter": filter}
 
             response = self.service.get(self.request.uri, data)

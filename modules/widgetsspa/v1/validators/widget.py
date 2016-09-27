@@ -15,14 +15,14 @@ log = logging.getLogger(__name__)
 
 def get(func):
     """
-    Validates request: mandatory parameters and configs.
+    Validates request: mandatory parameters.
     """
     @wraps(func)
     def structure(self, filter=None):
 
         schema = {
             "type": "object", "properties": {
-                "filter": {"required": False, "type": "integer"},
+                "filter": {"required": False, "format": "filter"},
             }
         }
 
@@ -50,7 +50,7 @@ def get(func):
 
 def post(func):
     """
-    Validates request: mandatory parameters and configs.
+    Validates request: mandatory parameters.
     """
     @wraps(func)
     def structure(self):
@@ -58,7 +58,10 @@ def post(func):
         schema = {
             "type": "object", "properties": {
                 "name": {"required": True, "type": "string"},
-                "gravatar": {"required": False, "type": "string"},
+                "color": {"required": True, "type": "string"},
+                "price": {"required": True, "type": "number"},
+                "inventory": {"required": True, "type": "integer"},
+                "melts": {"required": True, "type": "boolean"},
             }
         }
 
@@ -78,4 +81,74 @@ def post(func):
             return self.error({"message": "{0}" . format(error)})
 
         return func(self)
+    return structure
+
+
+def put(func):
+    """
+    Validates request: mandatory parameters.
+    """
+    @wraps(func)
+    def structure(self, id):
+
+        schema = {
+            "type": "object", "properties": {
+                "id": {"required": True, "type": "integer"},
+                "name": {"required": False, "type": "string"},
+                "color": {"required": False, "type": "string"},
+                "price": {"required": False, "type": "number"},
+                "inventory": {"required": False, "type": "integer"},
+                "melts": {"required": False, "type": "boolean"},
+            }
+        }
+
+        try:
+            data = json_decode(self.request.body)
+            data.update({"id": int(id)})
+
+        except Exception:
+            log.error("Could not do it. "
+                      "Error: Invalid JSON. ")
+            return self.error({"message": "Invalid JSON"})
+
+        try:
+            Validators.validate_schema(data, schema)
+        except Exception as error:
+            log.error("Could not do it. "
+                      "Error: Invalid Schema: {0}. ")
+            return self.error({"message": "{0}" . format(error)})
+
+        return func(self, id)
+    return structure
+
+
+def delete(func):
+    """
+    Validates request: mandatory parameters.
+    """
+    @wraps(func)
+    def structure(self, id):
+
+        schema = {
+            "type": "object", "properties": {
+                "id": {"required": True, "type": "integer"},
+            }
+        }
+
+        try:
+            data = ({"id": int(id)})
+
+        except Exception:
+            log.error("Could not do it. "
+                      "Error: Invalid JSON. ")
+            return self.error({"message": "Invalid JSON"})
+
+        try:
+            Validators.validate_schema(data, schema)
+        except Exception as error:
+            log.error("Could not do it. "
+                      "Error: Invalid Schema: {0}. ")
+            return self.error({"message": "{0}" . format(error)})
+
+        return func(self, id)
     return structure
