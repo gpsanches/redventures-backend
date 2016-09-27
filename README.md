@@ -44,11 +44,13 @@ USERS
 GET
 
 http://localhost:8888/users
+
 http://localhost:8888/users/id/1
 
 POST
 
 http://localhost:8888/users
+
     body: {
              "name": "Guilherme",
              "gravatar": "http://www.gravatar.com/avatar/a51972ea936bc3b841350caef34ea47e?s=64&d=monsterid"
@@ -61,12 +63,15 @@ WIDGETS
 GET
 
 http://localhost:8888/widgets
+
 http://localhost:8888/widgets/id/1
+
 http://localhost:8888/widgets/name/Test
 
 POST
 
 http://localhost:8888/widgets
+
     body: {
              "name": "Test",
              "color": "blue",
@@ -78,6 +83,7 @@ http://localhost:8888/widgets
 PUT
 
 http://localhost:8888/widgets/id/1
+
     body: {
         "color": "red"
     }
