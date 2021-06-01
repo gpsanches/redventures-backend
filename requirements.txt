@@ -45,7 +45,7 @@ tornado==4.3
 Tornado-JSON==1.2.0
 Tornado-MySQL==0.5.1
 tornado-webservices==0.9.5.0
-urllib3==1.12
+urllib3==1.26.5
 validators==0.10
 validictory==1.0.1
 wheel==0.24.0
